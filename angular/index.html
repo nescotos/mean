@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title> My Angular App</title>
+</head>
+<body ng-app="app" ng-controller="mainController as main">
+  <h1>Hello World {{main.message}} !</h1>
+  <p>{{main.variable}}</p>
+  <p ng-if="main.flag">Flag is true</p>
+  <button type="button" ng-click="main.change()">Click</button>
+  <input type="text" ng-model="main.variable">
+  <ul>
+    <li ng-repeat="code in main.codes">{{code.name}}  {{code.age}}</li>
+  </ul>
+  <input type="text" ng-model="main.nameInserted">
+  <input type="text" ng-model="main.ageInserted">
+  <button type="button" ng-click="main.addCode()">Clicked!</button>
+  <script src="angular.min.js"></script>
+  <script>
+    var app = angular.module('app', []);
+    app.controller('mainController', function(){
+      var vm = this;
+      vm.message = "from AngularJS"
+      vm.flag = true
+      vm.variable = "Variable"
+      vm.codes = [
+        { name: 'X', age: '25'},
+        { name: 'Y', age: '24'},
+        { name: 'Z', age: '28'},
+      ]
+      vm.addCode = function(){
+        vm.codes.push({name: vm.nameInserted, age: vm.ageInserted})
+      }
+
+      vm.change = function(){
+        vm.flag = !vm.flag;
+        console.log(vm.flag);
+      }
+    });
+  </script>
+</body>
+</html>
