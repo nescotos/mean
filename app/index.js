@@ -35,12 +35,15 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/client/index.html');
 });
 
+var authApi = require('./server/routes/authApi')(express);
+app.use('', authApi);
 //Mini Api
 var miniApi = require('./server/routes/miniApi')(express);
 app.use('/api', miniApi);
 //Comment Api
 var commentApi = require('./server/routes/commentApi')(express);
 app.use('/api', commentApi);
+//
 
 //Starting server
 app.listen(config.PORT);

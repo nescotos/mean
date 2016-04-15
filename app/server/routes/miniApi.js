@@ -1,7 +1,31 @@
 var Mini = require('../models/mini');
 var bodyParser = require('body-parser');
+var config = require('../../config');
+var jwt = require('jsonwebtoken');
+var superSecret = config.SUPERSECRET;
 module.exports = function(express){
   var miniApi = express.Router();
+
+  miniApi.use(function(req, res, next) {
+    // do logging
+    // check header or url parameters or post parameters for token
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    // decode token
+    if (token) {
+      // verifies secret and checks exp
+      jwt.verify(token, superSecret, function(err, decoded) {
+        if (err) {
+          res.status(403).send({
+            success: false,
+            message: 'Failed to authenticate token.'
+            });
+        } else {
+            req.decoded = decoded;
+        }
+        next(); // make sure we go to the next routes and don't stop here
+      });
+    }
+  });
 
   miniApi.route('/mini')
   //Return all minis
@@ -17,9 +41,12 @@ module.exports = function(express){
   //Store one mini
   .post(function(req, res){
     var mini = new Mini();
-    mini = req.body.title;
-    mini = req.body.content;
-    mini = req.body.userId;
+    mini.title = req.body.title;
+    console.log('Mini',mini);
+    mini.content = req.body.content;
+    console.log('Mini',mini);
+    mini.userId = req.body.userId;
+    console.log('Mini',mini);
     mini.save(function(err){
       if(err){
         res.json({success: false, message: err});
@@ -46,7 +73,7 @@ module.exports = function(express){
       if(err){
         res.json({success: false, message: err});
       }else{
-        mini = req.body.mini;
+        mini.title = req.body.title;
         mini.save();
         res.json({success: true, message: 'Mini updated!'});
       }

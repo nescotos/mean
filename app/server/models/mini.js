@@ -8,8 +8,10 @@ var miniSchema = new Schema({
   updatedAt: {type: Date, required: true, default: Date.now},
   userId : {type: String, required: true},
   comments : [{
-    commentId: {type: String}
-    }    
+    comment : {type: String, required: true, maxLength: 200},
+    createdAt: {type: Date, required: true, default: Date.now},
+    deleted: {type: Boolean, required: true, default: false}
+    }
   ]
 });
 
